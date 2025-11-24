@@ -7,7 +7,12 @@ var cors = require("cors")
 require('dotenv').config()
 
 var app = express();
-app.use(cors())
+// Permite qualquer origem (útil para desenvolvimento)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 

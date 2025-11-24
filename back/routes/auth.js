@@ -4,32 +4,36 @@ const bcrypt = require('bcryptjs')
 const {findUserByUsername, createUser} = require('../models/userModel')
 const router = express.Router()
 
-router.post('/register',(req, res)=>{
-    const {username, password} = req.body
+// Rota de Registro
+router.post('/register', (req, res) => {
+    const { username, password } = req.body
 
-    findUserByUsername(username, async (err, user)=>{
-        if(err){
-            return res.status(500).json({error: 'Erro no banco de dados'})
+    findUserByUsername(username, async (err, user) => {
+        if (err) {
+            return res.status(500).json({ error: 'Erro no banco de dados' })
         }
-        if(user){
-            return res.status(400).json({message: 'Usuário já existe'})
+        if (user) {
+            return res.status(400).json({ message: 'Usuário já existe' })
         }
-    })
 
-    createUser(username, password, (err, newUser)=>{
-        if(err){
-            return res.status(500).json({error: 'Erro ao criar usuário'})
-        }
-        res.status(201).json({message: 'Usuário criado com sucesso', user: newUser})
+        createUser(username, password, (err, newUser) => {
+            if (err) {
+                return res.status(500).json({ error: 'Erro ao criar usuário' })
+            }
+            res.status(201).json({ message: 'Usuário criado com sucesso', user: newUser })
+        })
     })
 })
 
-// Login
+// Rota de Login
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   findUserByUsername(username, async (err, user) => {
-    if (err) return res.status(500).json({ error: 'Erro no banco de dados' });
+    if (err) {
+        console.error("ERRO REAL DO SQLITE:", err); // Mostra o erro no terminal
+        return res.status(500).json({ error: 'Erro no banco de dados' });
+    }
     if (!user) return res.status(404).json({ message: 'Usuário não encontrado' });
 
     const validPassword = await bcrypt.compare(password, user.password);

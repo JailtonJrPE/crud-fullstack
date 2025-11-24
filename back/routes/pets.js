@@ -3,13 +3,8 @@ var router = express.Router();
 var authenticateToken = require('../middleware/auth')
 var {findPetById, createPet, getPets, deletePet, updatePet} = require('../models/petModel')
 
-// BANCO DE DADOS
-// const pets = [
-//   {nome: "henning", idade: 40, matricula: 123456}
-// ]
-
 /* GET pets API. */
-router.get('/',authenticateToken, function(req, res, next) {
+router.get('/', authenticateToken, function(req, res, next) {
   getPets((err, pets)=>{
     if(err){
       console.error('getPets erro:', err.message)
@@ -21,9 +16,8 @@ router.get('/',authenticateToken, function(req, res, next) {
 });
 
 /* GET pets pelo ID API. */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', authenticateToken, function(req, res, next) {
   const id = req.params.id
-  console.log("veio", id)
   findPetById(id, (err, pet)=>{
     if(err){
       console.error('findPetById erro:', err.message)
@@ -39,27 +33,25 @@ router.get('/:id', function(req, res, next) {
 });
 
 /* POST pets API. */
-router.post('/',authenticateToken, function(req, res, next) {
-  // aceitar tanto { name } quanto { namePet } para compatibilidade
-  const name = req.body.name || req.body.namePet
-  const gender = req.body.gender
-  const color = req.body.color
-  const breed = req.body.breed
+router.post('/', authenticateToken, function(req, res, next) {
+  // Agora passamos o corpo inteiro (req.body) para o model
+  // Isso permite enviar { name, species, age, breed... } tudo de uma vez
+  const petData = req.body;
 
-  console.log('veio', { name, gender, color, breed })
+  console.log('Tentando criar pet:', petData)
 
-  createPet(name, gender, color, breed, (err, newPet)=>{
+  createPet(petData, (err, newPet)=>{
     if(err){
       console.error('createPet erro:', err.message)
       return res.status(500).json({error: 'Erro ao salvar pet'})
     }
 
-    return res.status(201).json({message: 'Usuário criado com sucesso', pet: newPet})
+    return res.status(201).json({message: 'Pet criado com sucesso', pet: newPet})
   })
 });
 
 // DELETE pet API.
-router.delete('/:id',authenticateToken, function(req, res){
+router.delete('/:id', authenticateToken, function(req, res){
   const id = req.params.id
   deletePet(id, (err)=>{
     if(err){
@@ -71,11 +63,12 @@ router.delete('/:id',authenticateToken, function(req, res){
   })
 })
 
-router.put('/:id',authenticateToken, function(req, res){
+/* PUT pets API. */
+router.put('/:id', authenticateToken, function(req, res){
   const id = req.params.id
-  const { name, gender, color, breed } = req.body
+  const petData = req.body
 
-  updatePet(id, name, gender, color, breed, (err)=>{
+  updatePet(id, petData, (err)=>{
     if(err){
       console.error('updatePet erro:', err.message)
       return res.status(500).json({error: 'Erro ao atualizar pet'})
