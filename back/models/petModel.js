@@ -7,20 +7,21 @@ function findPetById(id, callback){
     })
 }
 
-// Pegar todos os pets (pode incluir o nome do tutor futuramente com JOIN)
+// Pegar todos os pets (Trazendo o ID do tutor)
 function getPets(callback){
+    // Futuramente você pode fazer um JOIN aqui para trazer o nome do Tutor
     db.all('SELECT * FROM pets', [], (err, rows)=>{
         callback(err, rows)
     })
 }
 
-// Criar um novo pet (Atualizado com species, age e tutor_id)
+// Criar pet (Atualizado: name, species, breed, age, tutor_id)
 function createPet(pet, callback){
-    const { name, species, breed, age, gender, color, tutor_id } = pet;
+    const { name, species, breed, age, tutor_id } = pet;
     
     db.run(
-        'INSERT INTO pets (name, species, breed, age, gender, color, tutor_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [name, species, breed, age, gender, color, tutor_id], 
+        'INSERT INTO pets (name, species, breed, age, tutor_id) VALUES (?, ?, ?, ?, ?)',
+        [name, species, breed, age, tutor_id], 
         function(err) {
             if(err){
                 console.error('Erro ao inserir pet:', err.message)
@@ -41,13 +42,13 @@ function deletePet(id, callback){
     })
 }
 
-// Atualizar pet (Atualizado com novos campos)
+// Atualizar pet (Atualizado)
 function updatePet(id, pet, callback){
-    const { name, species, breed, age, gender, color, tutor_id } = pet;
+    const { name, species, breed, age, tutor_id } = pet;
 
     db.run(
-        'UPDATE pets SET name = ?, species = ?, breed = ?, age = ?, gender = ?, color = ?, tutor_id = ? WHERE id = ?',
-        [name, species, breed, age, gender, color, tutor_id, id],
+        'UPDATE pets SET name = ?, species = ?, breed = ?, age = ?, tutor_id = ? WHERE id = ?',
+        [name, species, breed, age, tutor_id, id],
         (err)=>{
             if(err){
                 console.error('Erro ao atualizar pet:', err.message)

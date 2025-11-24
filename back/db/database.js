@@ -9,7 +9,7 @@ const db = new sqlite3.Database('./db/database.db', (err) => {
 })
 
 db.serialize(() => {
-    // Tabela de Usuários (Mantida para o Login funcionar)
+    // Tabela de Usuários
     db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,7 +18,7 @@ db.serialize(() => {
         )
     `)
 
-    // Tabela de Tutores (Obrigatório)
+    // Tabela de Tutores (Necessária para vincular ao Pet)
     db.run(`
         CREATE TABLE IF NOT EXISTS tutors (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,8 +28,7 @@ db.serialize(() => {
         )
     `)
 
-    // Tabela de Pets (Atualizada com os campos do requisito)
-    // Campos: Nome, Espécie, Raça, Idade, Tutor (FK), Gênero, Cor
+    // Tabela de Pets (CORRIGIDA: Sem cor/sexo, com espécie/idade/tutor)
     db.run(`
         CREATE TABLE IF NOT EXISTS pets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,48 +36,15 @@ db.serialize(() => {
             species TEXT,
             breed TEXT,
             age INTEGER,
-            gender TEXT,
-            color TEXT,
             tutor_id INTEGER,
             FOREIGN KEY(tutor_id) REFERENCES tutors(id)
         )
     `)
 
-    // Tabela de Serviços
-    db.run(`
-        CREATE TABLE IF NOT EXISTS services (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            description TEXT,
-            price REAL
-        )
-    `)
-
-    // Tabela de Produtos
-    db.run(`
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            description TEXT,
-            price REAL,
-            stock INTEGER
-        )
-    `)
-
-    // Tabela de Agendamentos
-    db.run(`
-        CREATE TABLE IF NOT EXISTS appointments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tutor_id INTEGER,
-            pet_id INTEGER,
-            service_id INTEGER,
-            date TEXT,
-            status TEXT,
-            FOREIGN KEY(tutor_id) REFERENCES tutors(id),
-            FOREIGN KEY(pet_id) REFERENCES pets(id),
-            FOREIGN KEY(service_id) REFERENCES services(id)
-        )
-    `)
+    // Outras tabelas (Serviços, Produtos, Agendamentos) podem ficar aqui...
+    db.run(`CREATE TABLE IF NOT EXISTS services (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, price REAL)`)
+    db.run(`CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, price REAL, stock INTEGER)`)
+    db.run(`CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, tutor_id INTEGER, pet_id INTEGER, service_id INTEGER, date TEXT, status TEXT)`)
 })
 
 module.exports = db

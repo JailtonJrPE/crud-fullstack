@@ -11,46 +11,35 @@ import { PetService } from './services/pet.service';
 export class PetComponent implements OnInit {
 
     petDialog: boolean = false;
-
     deletePetDialog: boolean = false;
-
     deletePetsDialog: boolean = false;
-
     pets: Pet[] = [];
-
     pet: Pet = {};
-
     selectedPets: Pet[] = [];
-
     submitted: boolean = false;
-
     cols: any[] = [];
-
-    statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
 
     constructor(private petService: PetService, private messageService: MessageService) { }
 
     ngOnInit() {
-        this.petService.getPets().then(data => {
-            console.log("no compoente", data) 
-            this.pets = data
-        });
+        this.loadPets();
         
+        // Configuração das colunas (Importante para o Export funcionar)
         this.cols = [
-            { field: 'pet', header: 'Pet' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
-            { field: 'inventoryStatus', header: 'Status' }
+            { field: 'id', header: 'ID' },
+            { field: 'name', header: 'Nome' },
+            { field: 'species', header: 'Espécie' },
+            { field: 'breed', header: 'Raça' },
+            { field: 'age', header: 'Idade' },
+            { field: 'tutor_id', header: 'Tutor (ID)' }
         ];
+    }
 
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
+    loadPets() {
+        this.petService.getPets().then(data => {
+            this.pets = data;
+        });
     }
 
     openNew() {
@@ -73,18 +62,17 @@ export class PetComponent implements OnInit {
         this.pet = { ...pet };
     }
 
-    confirmDeleteSelected() {
-        this.deletePetsDialog = false;
-        this.pets = this.pets.filter(val => !this.selectedPets.includes(val));
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Pets Deleted', life: 3000 });
-        this.selectedPets = [];
-    }
-
     confirmDelete() {
         this.deletePetDialog = false;
-        this.pets = this.pets.filter(val => val.id !== this.pet.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Pet Deleted', life: 3000 });
-        this.pet = {};
+        if (this.pet.id) {
+            this.petService.deletePet(this.pet.id).subscribe(() => {
+                this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet Deletado', life: 3000 });
+                this.pet = {};
+                this.loadPets();
+            }, error => {
+                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao deletar', life: 3000 });
+            });
+        }
     }
 
     hideDialog() {
@@ -95,45 +83,32 @@ export class PetComponent implements OnInit {
     savePet() {
         this.submitted = true;
 
+        // Validação simples: O nome é obrigatório
         if (this.pet.name?.trim()) {
             if (this.pet.id) {
-                // @ts-ignore
-                this.pet.inventoryStatus = this.pet.inventoryStatus.value ? this.pet.inventoryStatus.value : this.pet.inventoryStatus;
-                this.pets[this.findIndexById(this.pet.id)] = this.pet;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Pet Updated', life: 3000 });
+                // Atualizar
+                this.petService.updatePet(this.pet).subscribe(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet Atualizado', life: 3000 });
+                    this.loadPets();
+                    this.petDialog = false;
+                    this.pet = {};
+                }, error => {
+                    console.error(error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar', life: 3000 });
+                });
             } else {
-                this.pet.id = this.createId();
-                // @ts-ignore
-                this.pet.inventoryStatus = this.pet.inventoryStatus ? this.pet.inventoryStatus.value : 'INSTOCK';
-                this.pets.push(this.pet);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Pet Created', life: 3000 });
-            }
-
-            this.pets = [...this.pets];
-            this.petDialog = false;
-            this.pet = {};
-        }
-    }
-
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.pets.length; i++) {
-            if (this.pets[i].id === id) {
-                index = i;
-                break;
+                // Criar
+                this.petService.createPet(this.pet).subscribe(() => {
+                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet Criado', life: 3000 });
+                    this.loadPets();
+                    this.petDialog = false;
+                    this.pet = {};
+                }, error => {
+                    console.error(error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar', life: 3000 });
+                });
             }
         }
-
-        return index;
-    }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
     }
 
     onGlobalFilter(table: Table, event: Event) {

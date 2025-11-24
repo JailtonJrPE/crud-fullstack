@@ -22,12 +22,14 @@ var usersRouter = require('./routes/users');
 var alunosRouter = require('./routes/alunos');
 var petsRouter = require('./routes/pets');
 var authRouter = require('./routes/auth')
+var tutorsRouter = require('./routes/tutors')
 
 // USANDO ROTAS
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/alunos', alunosRouter);
 app.use('/pets', petsRouter);
+app.use('/tutors', tutorsRouter);
 app.use('/auth', authRouter)
 
 // view engine setup
