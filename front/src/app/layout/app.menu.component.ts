@@ -23,8 +23,10 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Opções',
                 items: [
-                    { label: 'Pets', icon: 'pi pi-fw pi-heart', routerLink: ['/main/pet'] },
-                    { label: 'Tutores', icon: 'pi pi-fw pi-user', routerLink: ['/main/tutor'] } // <--- Adicionado aqui
+                    // Alterado de 'pi pi-fw pi-heart' para 'fa-solid fa-paw'
+                    { label: 'Pets', icon: 'fa-solid fa-paw', routerLink: ['/main/pet'] },
+                    { label: 'Tutores', icon: 'pi pi-fw pi-user', routerLink: ['/main/tutor'] },
+                    { label: 'Serviços', icon: 'pi pi-fw pi-tags', routerLink: ['/main/service'] }
                 ]
             },
             {
