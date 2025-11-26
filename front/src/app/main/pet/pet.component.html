@@ -73,8 +73,19 @@
                     <input type="number" pInputText id="age" [(ngModel)]="pet.age" />
                 </div>
                 <div class="field">
-                    <label for="tutor">ID do Tutor</label>
-                    <input type="number" pInputText id="tutor" [(ngModel)]="pet.tutor_id" placeholder="ID numérico do tutor" />
+                    <label for="tutor">Tutor</label>
+                    <p-dropdown 
+                        [options]="tutors" 
+                        [(ngModel)]="pet.tutor_id" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        placeholder="Selecione um Tutor"
+                        [filter]="true"
+                        filterBy="name"
+                        [showClear]="true"
+                        appendTo="body" 
+                        [style]="{'width':'100%'}">
+                    </p-dropdown>
                 </div>
             </ng-template>
 

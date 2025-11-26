@@ -3,29 +3,38 @@ import { Pet } from './models/pet';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { PetService } from './services/pet.service';
+import { TutorService } from '../tutor/services/tutor.service'; // Importando Serviço de Tutores
 
 @Component({
     templateUrl: './pet.component.html',
-    providers: [MessageService]
+    providers: [MessageService, TutorService] // Provedor adicionado
 })
 export class PetComponent implements OnInit {
 
     petDialog: boolean = false;
     deletePetDialog: boolean = false;
     deletePetsDialog: boolean = false;
+    
     pets: Pet[] = [];
+    tutors: any[] = []; // Lista para o Dropdown
+
     pet: Pet = {};
     selectedPets: Pet[] = [];
     submitted: boolean = false;
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
 
-    constructor(private petService: PetService, private messageService: MessageService) { }
+    // Injetando TutorService no construtor
+    constructor(
+        private petService: PetService, 
+        private tutorService: TutorService,
+        private messageService: MessageService
+    ) { }
 
     ngOnInit() {
         this.loadPets();
+        this.loadTutors(); // Carregar tutores ao iniciar
         
-        // Configuração das colunas (Importante para o Export funcionar)
         this.cols = [
             { field: 'id', header: 'ID' },
             { field: 'name', header: 'Nome' },
@@ -39,6 +48,13 @@ export class PetComponent implements OnInit {
     loadPets() {
         this.petService.getPets().then(data => {
             this.pets = data;
+        });
+    }
+
+    // Função nova para buscar tutores
+    loadTutors() {
+        this.tutorService.getTutors().then(data => {
+            this.tutors = data;
         });
     }
 
@@ -83,10 +99,8 @@ export class PetComponent implements OnInit {
     savePet() {
         this.submitted = true;
 
-        // Validação simples: O nome é obrigatório
         if (this.pet.name?.trim()) {
             if (this.pet.id) {
-                // Atualizar
                 this.petService.updatePet(this.pet).subscribe(() => {
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet Atualizado', life: 3000 });
                     this.loadPets();
@@ -97,7 +111,6 @@ export class PetComponent implements OnInit {
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar', life: 3000 });
                 });
             } else {
-                // Criar
                 this.petService.createPet(this.pet).subscribe(() => {
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet Criado', life: 3000 });
                     this.loadPets();
