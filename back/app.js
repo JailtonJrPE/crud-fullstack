@@ -33,6 +33,7 @@ app.use('/pets', petsRouter);
 app.use('/tutors', tutorsRouter);
 app.use('/services', servicesRouter);
 app.use('/auth', authRouter)
+app.use('/services', servicesRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
