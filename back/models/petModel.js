@@ -15,6 +15,13 @@ function getPets(callback){
     })
 }
 
+// Buscar pets por ID do Tutor
+function findPetsByTutorId(tutorId, callback){
+    db.all('SELECT * FROM pets WHERE tutor_id = ?', [tutorId], (err, rows)=>{
+        callback(err, rows)
+    })
+}
+
 // Criar pet (Atualizado: name, species, breed, age, tutor_id)
 function createPet(pet, callback){
     const { name, species, breed, age, tutor_id } = pet;
@@ -59,4 +66,4 @@ function updatePet(id, pet, callback){
     )
 }
 
-module.exports = { findPetById, createPet, getPets, deletePet, updatePet }
+module.exports = { findPetById, createPet, getPets, deletePet, updatePet, findPetsByTutorId }
