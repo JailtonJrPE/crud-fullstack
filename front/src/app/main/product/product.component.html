@@ -1,0 +1,101 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Novo" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} registros" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gerenciar Produtos</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Pesquisar..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="price">Preço <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="stock">Estoque <p-sortIcon field="stock"></p-sortIcon></th>
+                        <th pSortableColumn="description">Descrição <p-sortIcon field="description"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td style="width:30%; min-width:10rem;">
+                            <span class="p-column-title">Nome</span>
+                            {{product.name}}
+                        </td>
+                        <td style="width:20%; min-width:8rem;">
+                            <span class="p-column-title">Preço</span>
+                            {{product.price | currency:'BRL'}}
+                        </td>
+                        <td style="width:20%; min-width:8rem;">
+                            <span class="p-column-title">Estoque</span>
+                            {{product.stock}}
+                        </td>
+                         <td style="width:30%; min-width:10rem;">
+                            <span class="p-column-title">Descrição</span>
+                            {{product.description}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProduct(product)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Detalhes do Produto" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nome</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
+                    <small class="p-error" *ngIf="submitted && !product.name">Nome é obrigatório.</small>
+                </div>
+                <div class="field">
+                    <label for="description">Descrição</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="price">Preço</label>
+                        <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="BRL" locale="pt-BR"></p-inputNumber>
+                    </div>
+                    <div class="field col">
+                        <label for="stock">Estoque</label>
+                        <p-inputNumber id="stock" [(ngModel)]="product.stock"></p-inputNumber>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteProductDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="product">Tem certeza que deseja deletar <b>{{product.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Não" (click)="deleteProductDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sim" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
