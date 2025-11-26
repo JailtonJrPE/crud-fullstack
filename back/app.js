@@ -24,6 +24,7 @@ var petsRouter = require('./routes/pets');
 var authRouter = require('./routes/auth')
 var tutorsRouter = require('./routes/tutors')
 var servicesRouter = require('./routes/services');
+var agendamentosRouter = require('./routes/agendamentos');
 
 // USANDO ROTAS
 app.use('/', indexRouter);
@@ -32,6 +33,7 @@ app.use('/alunos', alunosRouter);
 app.use('/pets', petsRouter);
 app.use('/tutors', tutorsRouter);
 app.use('/services', servicesRouter);
+app.use('/agendamentos', agendamentosRouter);
 app.use('/auth', authRouter)
 app.use('/services', servicesRouter);
 
