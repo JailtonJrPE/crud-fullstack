@@ -23,6 +23,12 @@ export class PetService {
             .toPromise()
             .then(res => res.pets as Pet[]);
     }
+    
+    getPetsByTutor(tutorId: number) {
+        return this.http.get<any>(this.urlApi + '/tutor/' + tutorId, {headers: this.getHeaders()})
+            .toPromise()
+            .then(res => res.pets as Pet[]);
+    }
 
     createPet(pet: Pet) {
         return this.http.post<any>(this.urlApi, pet, { headers: this.getHeaders() });
