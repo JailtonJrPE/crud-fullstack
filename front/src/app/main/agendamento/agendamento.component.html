@@ -1,0 +1,121 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Novo Agendamento" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="right">
+                    <button pButton pRipple label="Atualizar" icon="pi pi-refresh" class="p-button-help" (click)="loadData()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="agendamentos" [columns]="cols" responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Agenda</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="date">Data <p-sortIcon field="date"></p-sortIcon></th>
+                        <th pSortableColumn="tutor_name">Tutor <p-sortIcon field="tutor_name"></p-sortIcon></th>
+                        <th pSortableColumn="pet_name">Pet <p-sortIcon field="pet_name"></p-sortIcon></th>
+                        <th pSortableColumn="service_name">Serviço <p-sortIcon field="service_name"></p-sortIcon></th>
+                        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-app>
+                    <tr>
+                        <td>{{app.id}}</td>
+                        <td>{{app.date | date:'dd/MM/yyyy HH:mm'}}</td>
+                        <td>{{app.tutor_name}}</td>
+                        <td>{{app.pet_name}}</td>
+                        <td>{{app.service_name}}</td>
+                        <td><span [class]="'customer-badge status-' + (app.status ? app.status.toLowerCase() : '')">{{app.status}}</span></td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editAgendamento(app)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteAgendamento(app)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="agendamentoDialog" [style]="{width: '450px'}" header="Agendamento" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                
+                <div class="field">
+                    <label>Tutor</label>
+                    <p-dropdown 
+                        [options]="tutors" 
+                        [(ngModel)]="agendamento.tutor_id" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        placeholder="Selecione o Tutor" 
+                        appendTo="body" 
+                        [filter]="true" 
+                        filterBy="name">
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label>Pet</label>
+                    <p-dropdown 
+                        [options]="pets" 
+                        [(ngModel)]="agendamento.pet_id" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        placeholder="Selecione o Pet" 
+                        appendTo="body" 
+                        [filter]="true" 
+                        filterBy="name">
+                    </p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label>Serviço</label>
+                    <p-dropdown [options]="services" [(ngModel)]="agendamento.service_id" optionLabel="name" optionValue="id" placeholder="Selecione o Serviço" appendTo="body" [filter]="true" filterBy="name"></p-dropdown>
+                </div>
+
+                <div class="field">
+                    <label>Data e Hora</label>
+                    <p-calendar [(ngModel)]="agendamento.date" [showTime]="true" [showSeconds]="false" dateFormat="dd/mm/yy" appendTo="body"></p-calendar>
+                </div>
+
+                <div class="field">
+                    <label>Status</label>
+                    <p-dropdown [options]="statuses" [(ngModel)]="agendamento.status" placeholder="Selecione o Status" appendTo="body"></p-dropdown>
+                </div>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="saveAgendamento()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Deseja excluir este agendamento?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Não" (click)="deleteDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sim" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

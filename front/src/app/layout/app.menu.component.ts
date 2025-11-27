@@ -1,5 +1,4 @@
-import { OnInit } from '@angular/core';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
 
 @Component({
@@ -23,11 +22,13 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Opções',
                 items: [
-                    // Alterado de 'pi pi-fw pi-heart' para 'fa-solid fa-paw'
                     { label: 'Pets', icon: 'fa-solid fa-paw', routerLink: ['/main/pet'] },
                     { label: 'Tutores', icon: 'pi pi-fw pi-user', routerLink: ['/main/tutor'] },
                     { label: 'Serviços', icon: 'pi pi-fw pi-tags', routerLink: ['/main/service'] },
-                    { label: 'Produtos', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/main/product'] }
+                    // Item que veio da Main (Ricardo)
+                    { label: 'Produtos', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/main/product'] },
+                    // Item que veio da Branch (Guilherme)
+                    { label: 'Agendamentos', icon: 'pi pi-fw pi-calendar', routerLink: ['/main/agendamento'] }
                 ]
             },
             {

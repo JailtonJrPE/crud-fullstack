@@ -25,6 +25,7 @@ var productsRouter = require('./routes/products');
 var authRouter = require('./routes/auth')
 var tutorsRouter = require('./routes/tutors')
 var servicesRouter = require('./routes/services');
+var agendamentosRouter = require('./routes/agendamentos');
 
 // USANDO ROTAS
 app.use('/', indexRouter);
@@ -34,6 +35,7 @@ app.use('/pets', petsRouter);
 app.use('/tutors', tutorsRouter);
 app.use('/services', servicesRouter);
 app.use('/products', productsRouter);
+app.use('/agendamentos', agendamentosRouter);
 app.use('/auth', authRouter)
 app.use('/services', servicesRouter);
 
