@@ -32,6 +32,19 @@ router.get('/:id', authenticateToken, function(req, res, next) {
   })
 });
 
+/* GET pets de um tutor específico */
+router.get('/tutor/:id', authenticateToken, function(req, res, next) {
+  const tutorId = req.params.id
+  
+  findPetsByTutorId(tutorId, (err, pets)=>{
+    if(err){
+      console.error('Erro ao buscar pets do tutor:', err.message)
+      return res.status(500).json({error: 'Erro ao buscar pets'})
+    }
+    return res.status(200).json({pets: pets})
+  })
+});
+
 /* POST pets API. */
 router.post('/', authenticateToken, function(req, res, next) {
   // Agora passamos o corpo inteiro (req.body) para o model
