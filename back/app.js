@@ -13,7 +13,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // IMPORTANDO ROTAS
@@ -21,6 +21,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var alunosRouter = require('./routes/alunos');
 var petsRouter = require('./routes/pets');
+var productsRouter = require('./routes/products');
 var authRouter = require('./routes/auth')
 var tutorsRouter = require('./routes/tutors')
 var servicesRouter = require('./routes/services');
@@ -33,6 +34,7 @@ app.use('/alunos', alunosRouter);
 app.use('/pets', petsRouter);
 app.use('/tutors', tutorsRouter);
 app.use('/services', servicesRouter);
+app.use('/products', productsRouter);
 app.use('/agendamentos', agendamentosRouter);
 app.use('/auth', authRouter)
 app.use('/services', servicesRouter);

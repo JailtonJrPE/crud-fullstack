@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
         { path: 'pet', loadChildren: () => import('./pet/pet.module').then(m => m.PetModule) },
         { path: 'tutor', loadChildren: () => import('./tutor/tutor.module').then(m => m.TutorModule) },
         { path: 'service', loadChildren: () => import('./service/service.module').then(m => m.ServiceModule) },
+        { path: 'product', loadChildren: () => import('./product/product.module').then(m => m.ProductModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]
