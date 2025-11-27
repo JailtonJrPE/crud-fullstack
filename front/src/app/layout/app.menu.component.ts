@@ -26,7 +26,8 @@ export class AppMenuComponent implements OnInit {
                     // Alterado de 'pi pi-fw pi-heart' para 'fa-solid fa-paw'
                     { label: 'Pets', icon: 'fa-solid fa-paw', routerLink: ['/main/pet'] },
                     { label: 'Tutores', icon: 'pi pi-fw pi-user', routerLink: ['/main/tutor'] },
-                    { label: 'Serviços', icon: 'pi pi-fw pi-tags', routerLink: ['/main/service'] }
+                    { label: 'Serviços', icon: 'pi pi-fw pi-tags', routerLink: ['/main/service'] },
+                    { label: 'Agendamentos', icon: 'pi pi-fw pi-calendar', routerLink: ['/main/agendamento'] }
                 ]
             },
             {
