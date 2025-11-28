@@ -3,20 +3,20 @@ import { Pet } from './models/pet';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { PetService } from './services/pet.service';
-import { TutorService } from '../tutor/services/tutor.service'; // Importando Serviço de Tutores
+import { TutorService } from '../tutor/services/tutor.service';
 
 @Component({
     templateUrl: './pet.component.html',
-    providers: [MessageService, TutorService] // Provedor adicionado
+    providers: [MessageService, TutorService]
 })
 export class PetComponent implements OnInit {
 
     petDialog: boolean = false;
     deletePetDialog: boolean = false;
     deletePetsDialog: boolean = false;
-    
+
     pets: Pet[] = [];
-    tutors: any[] = []; // Lista para o Dropdown
+    tutors: any[] = []; // Lista de tutores carregada do backend
 
     pet: Pet = {};
     selectedPets: Pet[] = [];
@@ -24,24 +24,23 @@ export class PetComponent implements OnInit {
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
 
-    // Injetando TutorService no construtor
     constructor(
-        private petService: PetService, 
+        private petService: PetService,
         private tutorService: TutorService,
         private messageService: MessageService
     ) { }
 
     ngOnInit() {
         this.loadPets();
-        this.loadTutors(); // Carregar tutores ao iniciar
-        
+        this.loadTutors(); // Carrega os tutores assim que a tela abre
+
         this.cols = [
             { field: 'id', header: 'ID' },
             { field: 'name', header: 'Nome' },
             { field: 'species', header: 'Espécie' },
             { field: 'breed', header: 'Raça' },
             { field: 'age', header: 'Idade' },
-            { field: 'tutor_id', header: 'Tutor (ID)' }
+            { field: 'tutor_id', header: 'Tutor' }
         ];
     }
 
@@ -51,11 +50,18 @@ export class PetComponent implements OnInit {
         });
     }
 
-    // Função nova para buscar tutores
+    // Busca os tutores do serviço
     loadTutors() {
         this.tutorService.getTutors().then(data => {
             this.tutors = data;
         });
+    }
+
+    // FUNÇÃO NOVA: Recebe o ID e retorna o Nome do Tutor
+    getTutorName(id: number): string {
+        if (!this.tutors || !id) return 'Não informado';
+        const tutor = this.tutors.find(t => t.id === id);
+        return tutor ? tutor.name : 'ID: ' + id;
     }
 
     openNew() {

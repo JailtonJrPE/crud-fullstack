@@ -3,7 +3,164 @@ var router = express.Router();
 var authenticateToken = require('../middleware/auth')
 var {findPetById, createPet, getPets, deletePet, updatePet} = require('../models/petModel')
 
-/* GET pets API. */
+// BANCO DE DADOS
+// const pets = [
+//   {nome: "henning", idade: 40, matricula: 123456}
+// ]
+
+/**
+ * @swagger
+ * /pets:
+ *   get:
+ *     summary: Lista todos os pets
+ *     tags: [Pets]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de pets retornada com sucesso
+ */
+
+/**
+ * @swagger
+ * /pets/{id}:
+ *   get:
+ *     summary: Busca um pet pelo ID
+ *     tags: [Pets]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pet
+ *     responses:
+ *       200:
+ *         description: Pet encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 name:
+ *                   type: string
+ *                   example: Rex
+ *                 gender:
+ *                   type: string
+ *                   example: Macho
+ *                 color:
+ *                   type: string
+ *                   example: Marrom
+ *                 breed:
+ *                   type: string
+ *                   example: Labrador
+ *       404:
+ *         description: Pet não encontrado
+ */
+
+/**
+ * @swagger
+ * /pets:
+ *   post:
+ *     summary: Cria um novo pet
+ *     tags: [Pets]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Rex
+ *               gender:
+ *                 type: string
+ *                 example: Macho
+ *               color:
+ *                 type: string
+ *                 example: Marrom
+ *               breed:
+ *                 type: string
+ *                 example: Labrador
+ *     responses:
+ *       201:
+ *         description: Pet criado com sucesso
+ *       400:
+ *         description: Erro nos dados enviados
+ */
+/**
+ * @swagger
+ * /pets/{id}:
+ *   put:
+ *     summary: Atualiza um pet pelo ID
+ *     tags: [Pets]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pet a ser atualizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Thor
+ *               gender:
+ *                 type: string
+ *                 example: Macho
+ *               color:
+ *                 type: string
+ *                 example: Preto
+ *               breed:
+ *                 type: string
+ *                 example: Pitbull
+ *     responses:
+ *       200:
+ *         description: Pet atualizado com sucesso
+ *       400:
+ *         description: Erro nos dados enviados
+ *       404:
+ *         description: Pet não encontrado
+ */
+
+/**
+ * @swagger
+ * /pets/{id}:
+ *   delete:
+ *     summary: Remove um pet pelo ID
+ *     tags: [Pets]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pet a ser removido
+ *     responses:
+ *       200:
+ *         description: Pet removido com sucesso
+ *       404:
+ *         description: Pet não encontrado
+ */
+
 router.get('/', authenticateToken, function(req, res, next) {
   getPets((err, pets)=>{
     if(err){

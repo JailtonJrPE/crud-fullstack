@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-baseUrl: 'https://probable-doodle-7v5v6j6g77qqfwqjg-3000.app.github.dev',
+//baseUrl: 'https://probable-doodle-7v5v6j6g77qqfwqjg-3000.app.github.dev',
+baseUrl: 'http://localhost:3000',
   viaCepUrl: 'https://viacep.com.br/ws'
 };
 
