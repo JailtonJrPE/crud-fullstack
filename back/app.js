@@ -3,31 +3,38 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require("cors")
-require('dotenv').config()
+var cors = require("cors");
+require('dotenv').config();
+
+var { swaggerUi, swaggerSpec } = require('./swagger.js');
 
 var app = express();
-// Permite qualquer origem (útil para desenvolvimento)
+
+// ================= CORS =================
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// ================= MIDDLEWARES =================
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// IMPORTANDO ROTAS
+// ================= ROTAS =================
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var alunosRouter = require('./routes/alunos');
 var petsRouter = require('./routes/pets');
 var productsRouter = require('./routes/products');
-var authRouter = require('./routes/auth')
-var tutorsRouter = require('./routes/tutors')
+var authRouter = require('./routes/auth');
+var tutorsRouter = require('./routes/tutors');
 var servicesRouter = require('./routes/services');
 var agendamentosRouter = require('./routes/agendamentos');
 
-// USANDO ROTAS
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/alunos', alunosRouter);
@@ -36,35 +43,29 @@ app.use('/tutors', tutorsRouter);
 app.use('/services', servicesRouter);
 app.use('/products', productsRouter);
 app.use('/agendamentos', agendamentosRouter);
-app.use('/auth', authRouter)
-app.use('/services', servicesRouter);
+app.use('/auth', authRouter);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// ============== SWAGGER ==============
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// ============== REMOVER VIEW ENGINE (API NÃO USA EJS) ==============
+// Se quiser manter as views, basta recolocar isso:
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+// ============== 404 ==============
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// ============== ERROR HANDLER JSON (API) ==============
+app.use(function (err, req, res, next) {
+  console.error("Erro:", err.message);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).json({
+    error: true,
+    message: err.message
+  });
 });
 
 module.exports = app;
