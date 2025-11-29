@@ -30,7 +30,7 @@
                         <th pSortableColumn="species">Espécie <p-sortIcon field="species"></p-sortIcon></th>
                         <th pSortableColumn="breed">Raça <p-sortIcon field="breed"></p-sortIcon></th>
                         <th pSortableColumn="age">Idade <p-sortIcon field="age"></p-sortIcon></th>
-                        <th pSortableColumn="tutor_id">Tutor (ID) <p-sortIcon field="tutor_id"></p-sortIcon></th>
+                        <th pSortableColumn="tutor_id">Tutor <p-sortIcon field="tutor_id"></p-sortIcon></th>
                         <th>Ações</th>
                     </tr>
                 </ng-template>
@@ -41,7 +41,9 @@
                         <td><span class="p-column-title">Espécie</span>{{pet.species}}</td>
                         <td><span class="p-column-title">Raça</span>{{pet.breed}}</td>
                         <td><span class="p-column-title">Idade</span>{{pet.age}}</td>
-                        <td><span class="p-column-title">Tutor</span>{{pet.tutor_id}}</td>
+                        
+                        <td><span class="p-column-title">Tutor</span>{{ getTutorName(pet.tutor_id) }}</td>
+
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editPet(pet)"></button>
