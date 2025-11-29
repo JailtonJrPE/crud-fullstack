@@ -86,6 +86,9 @@ export class TutorComponent implements OnInit {
                     this.tutor = {};
                 });
             } else {
+                if(this.tutor.contact === undefined || this.tutor.contact === null || this.tutor.contact.trim() === '') {
+                    return;
+                }
                 this.tutorService.createTutor(this.tutor).subscribe(() => {
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tutor Criado', life: 3000 });
                     this.loadTutors();

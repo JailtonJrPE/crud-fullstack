@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TutorRoutingModule } from './tutor-routing.module';
 import { TutorComponent } from './tutor.component';
 import { TutorService } from './services/tutor.service';
+import { InputMaskModule } from 'primeng/inputmask';
 
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -36,6 +37,7 @@ import { DialogModule } from 'primeng/dialog';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
+        InputMaskModule,
         DialogModule
     ],
     declarations: [TutorComponent],
