@@ -63,7 +63,9 @@
                 </div>
                 <div class="field">
                     <label for="contact">Contato</label>
-                    <input type="text" pInputText id="contact" [(ngModel)]="tutor.contact" />
+                    <!-- <input type="text" pInputText id="contact" [(ngModel)]="tutor.contact" /> -->
+                    <p-inputMask id="contact" [(ngModel)]="tutor.contact" mask="(99) 99999-9999" placeholder="(00) 00000-0000" required autofocus></p-inputMask>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !tutor.contact">Numero é obrigatório</small>
                 </div>
                 <div class="field">
                     <label for="address">Endereço</label>

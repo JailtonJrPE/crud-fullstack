@@ -3,164 +3,57 @@ var router = express.Router();
 var authenticateToken = require('../middleware/auth')
 var {findPetById, createPet, getPets, deletePet, updatePet} = require('../models/petModel')
 
-// BANCO DE DADOS
-// const pets = [
-//   {nome: "henning", idade: 40, matricula: 123456}
-// ]
 
-/**
+
+ /**
  * @swagger
  * /pets:
  *   get:
- *     summary: Lista todos os pets
- *     tags: [Pets]
+ *     summary: Listar todos os pets
+ *     description: Retorna uma lista com todos os pets cadastrados no sistema
+ *     tags:
+ *       - Pets
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de pets retornada com sucesso
- */
-
-/**
- * @swagger
- * /pets/{id}:
- *   get:
- *     summary: Busca um pet pelo ID
- *     tags: [Pets]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do pet
- *     responses:
- *       200:
- *         description: Pet encontrado com sucesso
+ *         description: Lista de pets recuperada com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 name:
+ *                 pets:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Bella"
+ *                       species:
+ *                         type: string
+ *                         example: "Cachorro"
+ *                       age:
+ *                         type: integer
+ *                         example: 5
+ *                       breed:
+ *                         type: string
+ *                         example: "Golden Retriever"
+ *       500:
+ *         description: Erro ao buscar pets
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
  *                   type: string
- *                   example: Rex
- *                 gender:
- *                   type: string
- *                   example: Macho
- *                 color:
- *                   type: string
- *                   example: Marrom
- *                 breed:
- *                   type: string
- *                   example: Labrador
- *       404:
- *         description: Pet não encontrado
+ *                   example: "Erro ao buscar pets"
  */
-
-/**
- * @swagger
- * /pets:
- *   post:
- *     summary: Cria um novo pet
- *     tags: [Pets]
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: Rex
- *               gender:
- *                 type: string
- *                 example: Macho
- *               color:
- *                 type: string
- *                 example: Marrom
- *               breed:
- *                 type: string
- *                 example: Labrador
- *     responses:
- *       201:
- *         description: Pet criado com sucesso
- *       400:
- *         description: Erro nos dados enviados
- */
-/**
- * @swagger
- * /pets/{id}:
- *   put:
- *     summary: Atualiza um pet pelo ID
- *     tags: [Pets]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do pet a ser atualizado
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: Thor
- *               gender:
- *                 type: string
- *                 example: Macho
- *               color:
- *                 type: string
- *                 example: Preto
- *               breed:
- *                 type: string
- *                 example: Pitbull
- *     responses:
- *       200:
- *         description: Pet atualizado com sucesso
- *       400:
- *         description: Erro nos dados enviados
- *       404:
- *         description: Pet não encontrado
- */
-
-/**
- * @swagger
- * /pets/{id}:
- *   delete:
- *     summary: Remove um pet pelo ID
- *     tags: [Pets]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do pet a ser removido
- *     responses:
- *       200:
- *         description: Pet removido com sucesso
- *       404:
- *         description: Pet não encontrado
- */
-
 router.get('/', authenticateToken, function(req, res, next) {
   getPets((err, pets)=>{
     if(err){
@@ -172,7 +65,71 @@ router.get('/', authenticateToken, function(req, res, next) {
   })
 });
 
-/* GET pets pelo ID API. */
+/**
+ * @swagger
+ * /pets/{id}:
+ *   get:
+ *     summary: Buscar pet por ID
+ *     description: Retorna os dados de um pet específico pelo seu ID
+ *     tags:
+ *       - Pets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do pet
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Pet encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pet:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "Bella"
+ *                     species:
+ *                       type: string
+ *                       example: "Cachorro"
+ *                     age:
+ *                       type: integer
+ *                       example: 5
+ *                     breed:
+ *                       type: string
+ *                       example: "Golden Retriever"
+ *       404:
+ *         description: Pet não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Pet não encontrado"
+ *       500:
+ *         description: Erro ao buscar pet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erro ao buscar pet"
+ */
 router.get('/:id', authenticateToken, function(req, res, next) {
   const id = req.params.id
   findPetById(id, (err, pet)=>{
@@ -189,7 +146,63 @@ router.get('/:id', authenticateToken, function(req, res, next) {
   })
 });
 
-/* GET pets de um tutor específico */
+/**
+ * @swagger
+ * /pets/tutor/{id}:
+ *   get:
+ *     summary: Listar pets de um tutor específico
+ *     description: Retorna todos os pets associados a um tutor específico
+ *     tags:
+ *       - Pets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do tutor
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Lista de pets do tutor recuperada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pets:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Bella"
+ *                       species:
+ *                         type: string
+ *                         example: "Cachorro"
+ *                       age:
+ *                         type: integer
+ *                         example: 5
+ *                       breed:
+ *                         type: string
+ *                         example: "Golden Retriever"
+ *       500:
+ *         description: Erro ao buscar pets do tutor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erro ao buscar pets"
+ */
 router.get('/tutor/:id', authenticateToken, function(req, res, next) {
   const tutorId = req.params.id
   
@@ -202,7 +215,80 @@ router.get('/tutor/:id', authenticateToken, function(req, res, next) {
   })
 });
 
-/* POST pets API. */
+/**
+ * @swagger
+ * /pets:
+ *   post:
+ *     summary: Criar novo pet
+ *     description: Cria um novo pet no sistema
+ *     tags:
+ *       - Pets
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - species
+ *               - age
+ *               - breed
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Bella"
+ *               species:
+ *                 type: string
+ *                 example: "Cachorro"
+ *               age:
+ *                 type: integer
+ *                 example: 5
+ *               breed:
+ *                 type: string
+ *                 example: "Golden Retriever"
+ *     responses:
+ *       201:
+ *         description: Pet criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Pet criado com sucesso"
+ *                 pet:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "Bella"
+ *                     species:
+ *                       type: string
+ *                       example: "Cachorro"
+ *                     age:
+ *                       type: integer
+ *                       example: 5
+ *                     breed:
+ *                       type: string
+ *                       example: "Golden Retriever"
+ *       500:
+ *         description: Erro ao salvar pet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erro ao salvar pet"
+ */
 router.post('/', authenticateToken, function(req, res, next) {
   // Agora passamos o corpo inteiro (req.body) para o model
   // Isso permite enviar { name, species, age, breed... } tudo de uma vez
@@ -220,7 +306,46 @@ router.post('/', authenticateToken, function(req, res, next) {
   })
 });
 
-// DELETE pet API.
+/**
+ * @swagger
+ * /pets/{id}:
+ *   delete:
+ *     summary: Deletar pet
+ *     description: Remove um pet do sistema
+ *     tags:
+ *       - Pets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do pet a ser deletado
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Pet deletado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Pet deletado com sucesso"
+ *       500:
+ *         description: Erro ao deletar pet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erro ao deletar pet"
+ */
 router.delete('/:id', authenticateToken, function(req, res){
   const id = req.params.id
   deletePet(id, (err)=>{
@@ -233,7 +358,65 @@ router.delete('/:id', authenticateToken, function(req, res){
   })
 })
 
-/* PUT pets API. */
+/**
+ * @swagger
+ * /pets/{id}:
+ *   put:
+ *     summary: Atualizar pet
+ *     description: Atualiza os dados de um pet existente
+ *     tags:
+ *       - Pets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do pet a ser atualizado
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Bella"
+ *               species:
+ *                 type: string
+ *                 example: "Cachorro"
+ *               age:
+ *                 type: integer
+ *                 example: 5
+ *               breed:
+ *                 type: string
+ *                 example: "Golden Retriever"
+ *     responses:
+ *       200:
+ *         description: Pet atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Pet atualizado com sucesso"
+ *       500:
+ *         description: Erro ao atualizar pet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erro ao atualizar pet"
+ */
 router.put('/:id', authenticateToken, function(req, res){
   const id = req.params.id
   const petData = req.body
