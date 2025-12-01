@@ -3,6 +3,37 @@ var router = express.Router();
 var authenticateToken = require('../middleware/auth')
 var {findPetById, createPet, getPets, deletePet, updatePet} = require('../models/petModel')
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Pet:
+ *       type: object
+ *       required:
+ *         - name
+ *         - species
+ *         - age
+ *         - breed
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Bella"
+ *         species:
+ *           type: string
+ *           example: "Cachorro"
+ *         age:
+ *           type: integer
+ *           example: 5
+ *         breed:
+ *           type: string
+ *           example: "Golden Retriever"
+ *         tutor_id:
+ *           type: integer
+ *           example: 3
+ */
 
 
  /**
@@ -146,63 +177,7 @@ router.get('/:id', authenticateToken, function(req, res, next) {
   })
 });
 
-/**
- * @swagger
- * /pets/tutor/{id}:
- *   get:
- *     summary: Listar pets de um tutor específico
- *     description: Retorna todos os pets associados a um tutor específico
- *     tags:
- *       - Pets
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID do tutor
- *         schema:
- *           type: integer
- *           example: 1
- *     responses:
- *       200:
- *         description: Lista de pets do tutor recuperada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 pets:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         example: 1
- *                       name:
- *                         type: string
- *                         example: "Bella"
- *                       species:
- *                         type: string
- *                         example: "Cachorro"
- *                       age:
- *                         type: integer
- *                         example: 5
- *                       breed:
- *                         type: string
- *                         example: "Golden Retriever"
- *       500:
- *         description: Erro ao buscar pets do tutor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Erro ao buscar pets"
- */
+
 router.get('/tutor/:id', authenticateToken, function(req, res, next) {
   const tutorId = req.params.id
   
@@ -220,9 +195,7 @@ router.get('/tutor/:id', authenticateToken, function(req, res, next) {
  * /pets:
  *   post:
  *     summary: Criar novo pet
- *     description: Cria um novo pet no sistema
- *     tags:
- *       - Pets
+ *     tags: [Pets]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -230,28 +203,16 @@ router.get('/tutor/:id', authenticateToken, function(req, res, next) {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - species
- *               - age
- *               - breed
- *             properties:
- *               name:
- *                 type: string
- *                 example: "Bella"
- *               species:
- *                 type: string
- *                 example: "Cachorro"
- *               age:
- *                 type: integer
- *                 example: 5
- *               breed:
- *                 type: string
- *                 example: "Golden Retriever"
+ *             $ref: "#/components/schemas/Pet"
+ *           example:
+ *             name: "Thor"
+ *             species: "Cachorro"
+ *             age: 3
+ *             breed: "Labrador"
+ *             tutor_id: 2
  *     responses:
  *       201:
- *         description: Pet criado com sucesso
+ *         description: Pet criado
  *         content:
  *           application/json:
  *             schema:
@@ -259,36 +220,15 @@ router.get('/tutor/:id', authenticateToken, function(req, res, next) {
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Pet criado com sucesso"
  *                 pet:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 1
- *                     name:
- *                       type: string
- *                       example: "Bella"
- *                     species:
- *                       type: string
- *                       example: "Cachorro"
- *                     age:
- *                       type: integer
- *                       example: 5
- *                     breed:
- *                       type: string
- *                       example: "Golden Retriever"
+ *                   $ref: "#/components/schemas/Pet"
  *       500:
  *         description: Erro ao salvar pet
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Erro ao salvar pet"
- */
+ */   
+
+
+
+
 router.post('/', authenticateToken, function(req, res, next) {
   // Agora passamos o corpo inteiro (req.body) para o model
   // Isso permite enviar { name, species, age, breed... } tudo de uma vez
@@ -363,59 +303,32 @@ router.delete('/:id', authenticateToken, function(req, res){
  * /pets/{id}:
  *   put:
  *     summary: Atualizar pet
- *     description: Atualiza os dados de um pet existente
- *     tags:
- *       - Pets
+ *     tags: [Pets]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do pet a ser atualizado
  *         schema:
  *           type: integer
- *           example: 1
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: "Bella"
- *               species:
- *                 type: string
- *                 example: "Cachorro"
- *               age:
- *                 type: integer
- *                 example: 5
- *               breed:
- *                 type: string
- *                 example: "Golden Retriever"
+ *             $ref: "#/components/schemas/Pet"
+ *           example:
+ *             name: "Rex Atualizado"
+ *             species: "Cachorro"
+ *             age: 4
+ *             breed: "Vira-lata"
+ *             tutor_id: 3
  *     responses:
  *       200:
- *         description: Pet atualizado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Pet atualizado com sucesso"
+ *         description: Pet atualizado
  *       500:
- *         description: Erro ao atualizar pet
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Erro ao atualizar pet"
+ *         description: Erro ao atualizar
  */
 router.put('/:id', authenticateToken, function(req, res){
   const id = req.params.id

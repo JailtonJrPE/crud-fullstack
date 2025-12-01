@@ -148,6 +148,9 @@ router.post('/', authenticateToken, function(req, res) {
  *               price:
  *                 type: number
  *                 example: 49.9
+ *               stock:
+ *                 type: number
+ *                 example: 10       
  *               description:
  *                 type: string
  *                 example: "Camiseta 100% algodão"
@@ -198,10 +201,16 @@ router.put('/:id', authenticateToken, function(req, res) {
  *             properties:
  *               name:
  *                 type: string
+ *                 example: bola
  *               price:
  *                 type: number
+ *                 example: 10,00
+ *               stock:
+ *                 type: number
+ *                 example: 5
  *               description:
  *                 type: string
+ *                 example: bola amarela
  *     responses:
  *       200:
  *         description: Produto atualizado
