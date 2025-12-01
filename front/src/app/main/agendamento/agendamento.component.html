@@ -55,33 +55,25 @@
 
         <p-dialog [(visible)]="agendamentoDialog" [style]="{width: '450px'}" header="Agendamento" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                
+
                 <div class="field">
-                    <label>Tutor</label>
-                    <p-dropdown 
-                        [options]="tutors" 
-                        [(ngModel)]="agendamento.tutor_id" 
-                        optionLabel="name" 
-                        optionValue="id" 
-                        placeholder="Selecione o Tutor" 
-                        appendTo="body" 
-                        [filter]="true" 
-                        filterBy="name">
+                    <label>Pet</label>
+                    <p-dropdown
+                        [options]="pets"
+                        [(ngModel)]="agendamento.pet_id"
+                        optionLabel="name"
+                        optionValue="id"
+                        placeholder="Selecione o Pet"
+                        appendTo="body"
+                        [filter]="true"
+                        filterBy="name"
+                        (onChange)="onPetChange($event)">
                     </p-dropdown>
                 </div>
 
                 <div class="field">
-                    <label>Pet</label>
-                    <p-dropdown 
-                        [options]="pets" 
-                        [(ngModel)]="agendamento.pet_id" 
-                        optionLabel="name" 
-                        optionValue="id" 
-                        placeholder="Selecione o Pet" 
-                        appendTo="body" 
-                        [filter]="true" 
-                        filterBy="name">
-                    </p-dropdown>
+                    <label>Tutor</label>
+                    <input pInputText type="text" [value]="getTutorName()" readonly />
                 </div>
 
                 <div class="field">
