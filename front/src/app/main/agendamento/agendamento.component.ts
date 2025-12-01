@@ -18,11 +18,11 @@ export class AgendamentoComponent implements OnInit {
 
     agendamentos: Agendamento[] = [];
     agendamento: Agendamento = {};
-    
+
     tutors: any[] = [];
     pets: any[] = [];
     services: any[] = [];
-    
+
     statuses: any[] = [
         { label: 'Agendado', value: 'Agendado' },
         { label: 'Confirmado', value: 'Confirmado' },
@@ -37,14 +37,14 @@ export class AgendamentoComponent implements OnInit {
     constructor(
         private agendamentoService: AgendamentoService,
         private tutorService: TutorService,
-        private petService: PetService, 
+        private petService: PetService,
         private serviceService: ServiceService,
         private messageService: MessageService
     ) { }
 
     ngOnInit() {
         this.loadData();
-        
+
         this.cols = [
             { field: 'id', header: 'ID' },
             { field: 'date', header: 'Data/Hora' },
@@ -75,6 +75,16 @@ export class AgendamentoComponent implements OnInit {
             // @ts-ignore
             this.agendamento.date = new Date(this.agendamento.date);
         }
+        // Garantir que o tutor seja definido com base no pet associado ao agendamento
+        const petId = this.agendamento.pet_id;
+        if (petId) {
+            if (!this.pets || this.pets.length === 0) {
+                this.petService.getPets().then(data => { this.pets = data; this.onPetChange(petId); });
+            } else {
+                this.onPetChange(petId);
+            }
+        }
+
         this.agendamentoDialog = true;
     }
 
@@ -118,8 +128,41 @@ export class AgendamentoComponent implements OnInit {
             }
         }
     }
-    
+
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    // Quando o usuário selecionar um Pet, definir automaticamente o tutor associado
+    onPetChange(event: any) {
+        // `event` pode ser o objeto do evento do PrimeNG ou diretamente o id
+        const petId = (event && event.value !== undefined) ? event.value : event;
+        if (!petId) {
+            // @ts-ignore
+            this.agendamento.tutor_id = undefined;
+            return;
+        }
+
+        const pet = this.pets ? this.pets.find(p => p.id == petId) : null;
+        if (pet && (pet as any).tutor_id !== undefined) {
+            // @ts-ignore
+            this.agendamento.tutor_id = (pet as any).tutor_id;
+        } else {
+            // Tentativa de recarregar pets caso não encontrado
+            this.petService.getPets().then(data => {
+                this.pets = data;
+                const p = this.pets.find(x => x.id == petId);
+                // @ts-ignore
+                this.agendamento.tutor_id = p ? (p as any).tutor_id : undefined;
+            });
+        }
+    }
+
+    getTutorName(): string {
+        // @ts-ignore
+        const tutorId = this.agendamento ? this.agendamento.tutor_id : undefined;
+        if (!tutorId) return '';
+        const tutor = this.tutors ? this.tutors.find(t => t.id == tutorId) : null;
+        return tutor ? (tutor as any).name : '';
     }
 }
